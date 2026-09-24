@@ -32,7 +32,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:cent
 .links{display:flex;gap:4px;padding:4px;border:1px solid var(--line);border-radius:999px;background:rgba(10,10,13,.6);backdrop-filter:blur(10px)}
 .links a{font:500 12px "Geist Mono";letter-spacing:.06em;color:var(--mute);padding:7px 13px;border-radius:999px;text-transform:lowercase}
 .links a:hover{color:var(--ink)}.links a.on{color:#000;background:var(--ink)}
-.ca{font:500 11px "Geist Mono";letter-spacing:.08em;color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:8px 12px;display:flex;gap:8px;align-items:center;background:rgba(10,10,13,.6)}
+.ca{cursor:pointer;font:500 11px "Geist Mono";letter-spacing:.08em;color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:8px 12px;display:flex;gap:8px;align-items:center;background:rgba(10,10,13,.6)}
 .dot{width:6px;height:6px;border-radius:50%;background:var(--nacre);box-shadow:0 0 10px var(--nacre);animation:pulse 2.4s ease-in-out infinite}
 @keyframes pulse{50%{opacity:.35}}
 /* depth meter */
@@ -105,6 +105,12 @@ label{display:block;font:500 10px "Geist Mono";letter-spacing:.14em;text-transfo
 .tstats b{color:var(--ink);font-weight:500}
 .tchk{color:var(--live);display:none}.tchk.on{display:inline;animation:pin .5s}
 .tname.hid{color:#34313F}
+/* clickable */
+[data-q]{cursor:pointer}
+.spec div{transition:background .25s}.spec div:hover{background:rgba(185,168,240,.06)}
+.foe::before{content:"↗";position:absolute;top:18px;right:20px;font:500 12px "Geist Mono";color:var(--faint);transition:color .3s}.foe:hover::before{color:var(--nacre)}
+.ca:hover{border-color:rgba(185,168,240,.4);color:var(--ink)}
+details.flash{border-color:rgba(185,168,240,.6);box-shadow:0 0 0 4px rgba(185,168,240,.12);transition:border-color .3s,box-shadow .3s}
 /* card spotlight */
 .card{position:relative}
 .card::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(420px circle at var(--mx,-999px) var(--my,-999px),rgba(185,168,240,.09),transparent 45%);opacity:0;transition:opacity .35s}
@@ -172,7 +178,7 @@ summary::after{content:"+";font-family:"Geist Mono";color:var(--mute)}
 details[open] summary::after{content:"−"}
 details p{color:var(--ink2);font-size:14px;margin-top:10px}
 /* end */
-.end{text-align:center;padding-top:60px;padding-bottom:120px;display:flex;flex-direction:column;align-items:center}
+.end{text-align:center;padding-top:10px;padding-bottom:110px;display:flex;flex-direction:column;align-items:center}
 .pfp{position:relative;width:min(280px,64vw);aspect-ratio:1;animation:float 7s ease-in-out infinite}
 .pfp::before{content:"";position:absolute;inset:-40%;border-radius:50%;background:radial-gradient(circle,rgba(185,168,240,.18),transparent 62%);filter:blur(8px);z-index:-1}
 .pfp img{width:100%;height:100%;display:block;border-radius:50%;border:1px solid rgba(185,168,240,.28);box-shadow:0 0 0 6px rgba(185,168,240,.04),0 30px 80px -20px rgba(185,168,240,.35)}
@@ -198,7 +204,7 @@ details p{color:var(--ink2);font-size:14px;margin-top:10px}
 (  @  )
  '-~-'</pre></a>
  <div class="links"><a href="#deep" class="on">deep</a><a href="#race">race</a><a href="#tide">tide</a><a href="#rules">shell</a><a href="#console">console</a><a href="#faq">faq</a></div>
- <div class="ca"><i class="dot"></i><span>CA</span>&nbsp;sealed</div>
+ <button class="ca" data-q="q-ca"><i class="dot"></i><span>CA</span>&nbsp;sealed</button>
 </nav>
 
 <div class="depth" aria-hidden="true"><b id="dm">−0m</b><div class="track"><div class="fill" id="df"></div></div><span>the deep</span></div>
@@ -244,27 +250,27 @@ details p{color:var(--ink2);font-size:14px;margin-top:10px}
  <div class="tag rv">−90m <i>/</i> the shell</div>
  <h2 class="rv">Sealed against <em>all four.</em></h2>
  <div class="foes">
-  <div class="foe card rv"><pre>  >>>--->
+  <div class="foe card rv" data-q="q-snipe"><pre>  >>>--->
  >>>--->  @
   >>>---></pre><div class="x">sniped</div><h3>Nothing to race.</h3></div>
-  <div class="foe card rv"><pre>   $$$
+  <div class="foe card rv" data-q="q-rug"><pre>   $$$
   [===]
    \_/  x</pre><div class="x">rugged</div><h3>Nothing to pull.</h3></div>
-  <div class="foe card rv"><pre> (o)(o)
+  <div class="foe card rv" data-q="q-insider"><pre> (o)(o)
   \  /
    ??</pre><div class="x">insiders</div><h3>No early seat.</h3></div>
-  <div class="foe card rv"><pre> $DOG
+  <div class="foe card rv" data-q="q-copy"><pre> $DOG
  $D0G
  $DOGG</pre><div class="x">vamped</div><h3>No name to copy.</h3></div>
  </div>
  <div class="spec rv">
-  <div><small>01 · seal</small><b>sha-256</b></div>
-  <div><small>02 · hint</small><b>280 chars</b></div>
-  <div><small>03 · raise</small><b>10–100 SOL</b></div>
-  <div><small>04 · cap</small><b>2% / wallet</b></div>
-  <div><small>05 · price</small><b>one for all</b></div>
-  <div><small>06 · open</small><b>one tx · LP locked</b></div>
-  <div><small>07 · tide</small><b>full refund</b></div>
+  <div data-q="q-salt"><small>01 · seal</small><b>sha-256</b></div>
+  <div data-q="q-see"><small>02 · hint</small><b>280 chars</b></div>
+  <div data-q="q-raise"><small>03 · raise</small><b>10–100 SOL</b></div>
+  <div data-q="q-insider"><small>04 · cap</small><b>2% / wallet</b></div>
+  <div data-q="q-price"><small>05 · price</small><b>one for all</b></div>
+  <div data-q="q-rug"><small>06 · open</small><b>one tx · LP locked</b></div>
+  <div data-q="q-fill"><small>07 · tide</small><b>full refund</b></div>
  </div>
 </div></section>
 
@@ -343,23 +349,26 @@ details p{color:var(--ink2);font-size:14px;margin-top:10px}
  <div class="tag rv">−300m <i>/</i> faq</div>
  <h2 class="rv">Asked in <em>the deep.</em></h2>
  <div class="faq">
-  <details class="rv"><summary>What is CLAM?</summary><p>A Solana launchpad where every coin fills sealed, then deploys, reveals and opens its pool in one step.</p></details>
-  <details class="rv"><summary>What can I see before I buy?</summary><p>The hint, raise, deadline, cap, fill and the public seal. Not the name, ticker or art.</p></details>
-  <details class="rv"><summary>Why buy what you can't see?</summary><p>Everyone buys the same thing, on the same terms. The hint is the pitch. The reveal is the moment.</p></details>
-  <details class="rv"><summary>How are snipers stopped?</summary><p>The token doesn't exist while it fills. It's created and pooled in the same transaction.</p></details>
-  <details class="rv"><summary>How are rugs stopped?</summary><p>LP locked at open. Mint and freeze revoked. No dev bag.</p></details>
-  <details class="rv"><summary>How are insiders stopped?</summary><p>No whitelist, no team allocation, one price, 2% cap. The creator included.</p></details>
-  <details class="rv"><summary>Can the creator swap the name?</summary><p>No. A different name gives a different fingerprint. Check it in the console.</p></details>
-  <details class="rv"><summary>Why the salt?</summary><p>Tickers are short and guessable. 32 random bytes make guessing impossible.</p></details>
-  <details class="rv"><summary>What if it never fills?</summary><p>It never opens. Everyone takes back exactly what they put in.</p></details>
-  <details class="rv"><summary>What does $CLAM do?</summary><p>Every clam that opens pays a fee that buys back and burns $CLAM.</p></details>
-  <details class="rv"><summary>Is it live?</summary><p>The seal and verify tools are. The escrow program ships next.</p></details>
-  <details class="rv"><summary>Where is the CA?</summary><p>Sealed. Only this site and the CLAM account post it.</p></details>
+  <details class="rv" id="q-what"><summary>What is CLAM?</summary><p>A Solana launchpad where every coin fills sealed, then deploys, reveals and opens its pool in one step.</p></details>
+  <details class="rv" id="q-see"><summary>What can I see before I buy?</summary><p>The hint, raise, deadline, cap, fill and the public seal. Not the name, ticker or art.</p></details>
+  <details class="rv" id="q-why"><summary>Why buy what you can't see?</summary><p>Everyone buys the same thing, on the same terms. The hint is the pitch. The reveal is the moment.</p></details>
+  <details class="rv" id="q-snipe"><summary>How are snipers stopped?</summary><p>The token doesn't exist while it fills. It's created and pooled in the same transaction.</p></details>
+  <details class="rv" id="q-rug"><summary>How are rugs stopped?</summary><p>LP locked at open. Mint and freeze revoked. No dev bag.</p></details>
+  <details class="rv" id="q-insider"><summary>How are insiders stopped?</summary><p>No whitelist, no team allocation, one price, 2% cap. The creator included.</p></details>
+  <details class="rv" id="q-copy"><summary>How are copycats stopped?</summary><p>Nobody can copy a ticker they haven't seen. By the reveal, the real one is live.</p></details>
+  <details class="rv" id="q-raise"><summary>How big is a raise?</summary><p>10 to 100 SOL, set at filing. It opens the moment it's full.</p></details>
+  <details class="rv" id="q-price"><summary>Why one price?</summary><p>Everyone inside pays the price the pool opens at. First in and last in are equal.</p></details>
+  <details class="rv" id="q-out"><summary>Can I pull out before it fills?</summary><p>Yes. Any time before it fills, you take back what you put in.</p></details>
+  <details class="rv" id="q-swap"><summary>Can the creator swap the name?</summary><p>No. A different name gives a different fingerprint. Check it in the console.</p></details>
+  <details class="rv" id="q-salt"><summary>Why the salt?</summary><p>Tickers are short and guessable. 32 random bytes make guessing impossible.</p></details>
+  <details class="rv" id="q-fill"><summary>What if it never fills?</summary><p>It never opens. Everyone takes back exactly what they put in.</p></details>
+  <details class="rv" id="q-clam"><summary>What does $CLAM do?</summary><p>Every clam that opens pays a fee that buys back and burns $CLAM.</p></details>
+  <details class="rv" id="q-live"><summary>Is it live?</summary><p>The seal and verify tools are. The escrow program ships next.</p></details>
+  <details class="rv" id="q-ca"><summary>Where is the CA?</summary><p>Sealed. Only this site and the CLAM account post it.</p></details>
  </div>
 </div></section>
 
 <section class="end" id="end">
- <div class="pfp"><img src="/pfp.png" width="400" height="400" alt="CLAM" loading="lazy"></div>
  <div class="btns"><a class="btn p" href="#console">Seal a coin</a><a class="btn" href="#deep">Back up ↑</a></div>
 </section>
 </main>
@@ -444,6 +453,11 @@ addEventListener('scroll',()=>{if(!raf)raf=requestAnimationFrame(upd)},{passive:
 (()=>{const F=[...document.querySelectorAll('.foe pre')];F.forEach(p=>p._o=p.textContent);const G='@#%*+=-:·';
 if(!RM)setInterval(()=>{const p=F[(Math.random()*F.length)|0];let k=0;const iv=setInterval(()=>{p.textContent=p._o.split('').map(c=>c===' '||c==='\n'?c:(Math.random()<.55-k*.08?G[(Math.random()*G.length)|0]:c)).join('');if(++k>7){clearInterval(iv);p.textContent=p._o}},45)},1400);
 document.querySelectorAll('.card').forEach(c=>c.addEventListener('pointermove',e=>{const r=c.getBoundingClientRect();c.style.setProperty('--mx',e.clientX-r.left+'px');c.style.setProperty('--my',e.clientY-r.top+'px')}))})();
+
+/* ---------- everything clickable goes somewhere ---------- */
+function openQ(id){const d=$(id);if(!d)return;document.querySelectorAll('#faq details').forEach(x=>{if(x!==d)x.open=false});d.open=true;d.classList.add('in','flash');d.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>d.classList.remove('flash'),1800)}
+document.querySelectorAll('[data-q]').forEach(el=>{if(el.tagName!=='BUTTON'){el.setAttribute('role','link');el.tabIndex=0}el.addEventListener('click',()=>openQ(el.dataset.q));el.addEventListener('keydown',e=>{if(e.key==='Enter')openQ(el.dataset.q)})});
+document.querySelectorAll('a[href="#console"]').forEach(a=>a.addEventListener('click',()=>tab('seal')));
 
 /* ---------- live strip ---------- */
 async function slot(){for(const u of ['https://solana-rpc.publicnode.com','https://api.mainnet-beta.solana.com']){try{const r=await fetch(u,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'getSlot'})});const j=await r.json();if(j.result){$('slot').textContent=j.result.toLocaleString('en-US');return}}catch(e){}}}
