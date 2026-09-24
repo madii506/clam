@@ -110,6 +110,15 @@ label{display:block;font:500 10px "Geist Mono";letter-spacing:.14em;text-transfo
 .spec div{transition:background .25s}.spec div:hover{background:rgba(185,168,240,.06)}
 .foe::before{content:"↗";position:absolute;top:18px;right:20px;font:500 12px "Geist Mono";color:var(--faint);transition:color .3s}.foe:hover::before{color:var(--nacre)}
 .ca:hover{border-color:rgba(185,168,240,.4);color:var(--ink)}
+.ca em{font-style:normal;color:var(--ink2)}
+.cabox{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:18px;padding:6px 6px 6px 14px;border:1px solid var(--line);border-radius:999px;background:rgba(10,10,13,.6);backdrop-filter:blur(8px);font-size:12px;max-width:100%}
+.cabox .k{color:var(--nacre);letter-spacing:.12em;font-size:10px}
+.cabox code{font:400 12px "Geist Mono";color:var(--ink);padding:0 6px;word-break:break-all}
+.cabox .cp,.cabox a{font:500 11px "Geist Mono";color:var(--mute);border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:999px;padding:6px 11px;cursor:pointer;transition:color .2s,border-color .2s}
+.cabox .cp{color:#000;background:var(--ink);border-color:var(--ink)}
+.cabox a:hover{color:var(--ink);border-color:rgba(255,255,255,.25)}
+.cabox .cp.ok{background:var(--live);border-color:var(--live)}
+@media (max-width:560px){.cabox{border-radius:16px;padding:10px 12px}.cabox code{font-size:11px;flex-basis:100%;text-align:center;padding:4px 0 6px}}
 details.flash{border-color:rgba(185,168,240,.6);box-shadow:0 0 0 4px rgba(185,168,240,.12);transition:border-color .3s,box-shadow .3s}
 /* card spotlight */
 .card{position:relative}
@@ -204,7 +213,7 @@ details p{color:var(--ink2);font-size:14px;margin-top:10px}
 (  @  )
  '-~-'</pre></a>
  <div class="links"><a href="#deep" class="on">deep</a><a href="#race">race</a><a href="#tide">tide</a><a href="#rules">shell</a><a href="#console">console</a><a href="#faq">faq</a></div>
- <button class="ca" data-q="q-ca"><i class="dot"></i><span>CA</span>&nbsp;sealed</button>
+ <button class="ca" data-copy title="Copy CA"><i class="dot"></i><span>CA</span>&nbsp;<em class="cashort">3Rnei…kpN1V</em></button>
 </nav>
 
 <div class="depth" aria-hidden="true"><b id="dm">−0m</b><div class="track"><div class="fill" id="df"></div></div><span>the deep</span></div>
@@ -215,6 +224,7 @@ details p{color:var(--ink2);font-size:14px;margin-top:10px}
  <h1 class="sr">CLAM · sealed launches on Solana</h1>
  <div class="orb"><canvas id="asc" aria-label="An ASCII clam opening and closing around a pearl"></canvas></div>
  <div class="btns"><a class="btn p" href="#console">Seal a coin</a><a class="btn" href="#tide">How it opens ↓</a></div>
+ <div class="cabox m"><span class="k">CA</span><code>3RneiVQwmjb8iCyWmjZWeKtq87BSwfiJNn8JeNLkpN1V</code><button class="cp" data-copy>copy</button><a href="https://dexscreener.com/solana/3RneiVQwmjb8iCyWmjZWeKtq87BSwfiJNn8JeNLkpN1V" target="_blank" rel="noopener">chart ↗</a><a href="https://solscan.io/token/3RneiVQwmjb8iCyWmjZWeKtq87BSwfiJNn8JeNLkpN1V" target="_blank" rel="noopener">solscan ↗</a></div>
  <div class="status m"><span><i class="dot"></i>slot <b id="slot">—</b></span><span>SOL <b id="solp">—</b></span><span>seals <b>000</b></span></div>
 </section>
 
@@ -364,7 +374,7 @@ details p{color:var(--ink2);font-size:14px;margin-top:10px}
   <details class="rv" id="q-fill"><summary>What if it never fills?</summary><p>It never opens. Everyone takes back exactly what they put in.</p></details>
   <details class="rv" id="q-clam"><summary>What does $CLAM do?</summary><p>Every clam that opens pays a fee that buys back and burns $CLAM.</p></details>
   <details class="rv" id="q-live"><summary>Is it live?</summary><p>The seal and verify tools are. The escrow program ships next.</p></details>
-  <details class="rv" id="q-ca"><summary>Where is the CA?</summary><p>Sealed. Only this site and the CLAM account post it.</p></details>
+  <details class="rv" id="q-ca"><summary>What is the CA?</summary><p><code class="m" style="color:var(--pearl);word-break:break-all">3RneiVQwmjb8iCyWmjZWeKtq87BSwfiJNn8JeNLkpN1V</code> <button class="chip" data-copy style="margin-left:6px;padding:4px 10px">copy</button><br>Only this site and the CLAM account post it.</p></details>
  </div>
 </div></section>
 
@@ -458,6 +468,11 @@ document.querySelectorAll('.card').forEach(c=>c.addEventListener('pointermove',e
 function openQ(id){const d=$(id);if(!d)return;document.querySelectorAll('#faq details').forEach(x=>{if(x!==d)x.open=false});d.open=true;d.classList.add('in','flash');d.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>d.classList.remove('flash'),1800)}
 document.querySelectorAll('[data-q]').forEach(el=>{if(el.tagName!=='BUTTON'){el.setAttribute('role','link');el.tabIndex=0}el.addEventListener('click',()=>openQ(el.dataset.q));el.addEventListener('keydown',e=>{if(e.key==='Enter')openQ(el.dataset.q)})});
 document.querySelectorAll('a[href="#console"]').forEach(a=>a.addEventListener('click',()=>tab('seal')));
+
+/* ---------- CA copy ---------- */
+const CA='3RneiVQwmjb8iCyWmjZWeKtq87BSwfiJNn8JeNLkpN1V';
+async function copyCA(){try{await navigator.clipboard.writeText(CA)}catch(e){const t=document.createElement('textarea');t.value=CA;document.body.appendChild(t);t.select();try{document.execCommand('copy')}catch(_){}t.remove()}}
+document.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',async e=>{e.stopPropagation();await copyCA();const el=b.querySelector('em')||b,o=el.textContent;el.textContent='copied ✓';b.classList.add('ok');setTimeout(()=>{el.textContent=o;b.classList.remove('ok')},1400)}));
 
 /* ---------- live strip ---------- */
 async function slot(){for(const u of ['https://solana-rpc.publicnode.com','https://api.mainnet-beta.solana.com']){try{const r=await fetch(u,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'getSlot'})});const j=await r.json();if(j.result){$('slot').textContent=j.result.toLocaleString('en-US');return}}catch(e){}}}
