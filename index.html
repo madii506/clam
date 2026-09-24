@@ -239,7 +239,7 @@ details p{color:var(--ink2);font-size:14px;margin-top:10px}
  </div>
  <div class="tide-stage">
   <canvas id="tc" aria-label="A clam filling, then opening"></canvas>
-  <div class="tname m hid" id="tname">████████████ · $█████</div>
+  <div class="tname m hid" id="tname">████ · $████</div>
   <div class="tbar m" id="tbar"></div>
   <div class="tstats m"><span><b id="tsol">0.0</b> / 25 SOL</span><span><b id="tw">0</b> wallets</span><span class="tchk" id="tchk">✓ seal matches</span></div>
  </div>
@@ -438,7 +438,7 @@ function heroLoop(t){const s=(t-t0)/1000;hc+=(hov-hc)*.18;const base=RM?1:.62+.4
 (document.fonts?document.fonts.ready:Promise.resolve()).then(()=>requestAnimationFrame(heroLoop));
 
 /* ---------- tide scroll story ---------- */
-(()=>{const sec=$('tide'),R=makeAscii($('tc'),84,35),steps=[...sec.querySelectorAll('.st')];let last=-1,raf=0;const NAME='the deep one · $PEARL',HID='████████████ · $█████';
+(()=>{const sec=$('tide'),R=makeAscii($('tc'),84,35),steps=[...sec.querySelectorAll('.st')];let last=-1,raf=0;const NAME='clam · $CLAM',HID='████ · $████';
 function upd(){raf=0;const r=sec.getBoundingClientRect(),tot=sec.offsetHeight-innerHeight,p=Math.max(0,Math.min(1,-r.top/(tot||1)));
  const fill=Math.max(0,Math.min(1,(p-.1)/.5)),open=Math.max(0,Math.min(1,(p-.64)/.14)),stage=p<.1?0:p<.64?1:p<.84?2:3;
  R(open,.7+open*.5);const n=30,k=Math.round(fill*n);$('tbar').textContent='['+'#'.repeat(k)+'·'.repeat(n-k)+'] '+String(Math.round(fill*100)).padStart(3,' ')+'%';
@@ -512,7 +512,7 @@ $('dover').onclick=async()=>{
 const simR=makeAscii($('simc'),96,40);let sraise=25,tide=40,anim=null;
 chipGroup('rr',v=>{sraise=v;sim()});
 $('tide').oninput=e=>{tide=+e.target.value;sim()};$('yin').oninput=sim;
-const SAMPLE='the deep one · $PEARL';
+const SAMPLE='clam · $CLAM';
 function scramble(el,txt){const G='@#%*+=-:·';let i=0;clearInterval(el._t);el._t=setInterval(()=>{el.textContent=txt.split('').map((c,k)=>k<i?c:(c===' '?' ':G[(Math.random()*G.length)|0])).join('');if(++i>txt.length)clearInterval(el._t)},RM?0:40)}
 function sim(){
  const yin=Math.max(0,+$('yin').value||0),cap=sraise*.02,eff=Math.min(yin,cap);
