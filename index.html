@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CLAM</title>
+<meta name="description" content="A Solana launchpad where every coin launches sealed. Name, ticker and art stay hidden until it fills. You can't snipe what you can't see.">
+<meta property="og:title" content="CLAM">
+<meta property="og:description" content="you are not early. you are not late. you are inside.">
+<meta property="og:image" content="/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="/og.jpg">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#000;--ink:#F2F0F7;--ink2:rgba(242,240,247,.72);--mute:#8C889C;--faint:#4A4757;--line:rgba(255,255,255,.09);--line2:rgba(255,255,255,.05);--card:#0A0A0D;--card2:#111116;--pearl:#FFF4E2;--nacre:#B9A8F0;--nacre2:#8F86BE;--live:#6EE7B7;--warn:#F5C77E;--red:#FF8A8A}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{background:var(--bg);color:var(--ink);font:400 15px/1.6 Geist,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.m{font-family:"Geist Mono",ui-monospace,monospace}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--nacre);color:#000}
+#bub{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.veil{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(1200px 700px at 50% -10%,rgba(185,168,240,.10),transparent 60%),linear-gradient(180deg,transparent 0,rgba(8,6,20,.0) 40%,rgba(10,8,30,.55) 100%)}
+nav,main,footer{position:relative;z-index:2}
+/* nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:14px clamp(16px,3vw,32px);background:linear-gradient(180deg,rgba(0,0,0,.85),rgba(0,0,0,0));}
+.brand{display:flex;align-items:center;gap:10px;font:600 17px Geist;letter-spacing:-.02em}
+.brand pre{font:9px/9px "Geist Mono";color:var(--nacre)}
+.links{display:flex;gap:4px;padding:4px;border:1px solid var(--line);border-radius:999px;background:rgba(10,10,13,.6);backdrop-filter:blur(10px)}
+.links a{font:500 12px "Geist Mono";letter-spacing:.06em;color:var(--mute);padding:7px 13px;border-radius:999px;text-transform:lowercase}
+.links a:hover{color:var(--ink)}.links a.on{color:#000;background:var(--ink)}
+.ca{font:500 11px "Geist Mono";letter-spacing:.08em;color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:8px 12px;display:flex;gap:8px;align-items:center;background:rgba(10,10,13,.6)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--nacre);box-shadow:0 0 10px var(--nacre);animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.35}}
+/* depth meter */
+.depth{position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:15;display:flex;flex-direction:column;align-items:flex-end;gap:10px;font:500 10px "Geist Mono";color:var(--faint);letter-spacing:.08em}
+.depth .track{width:1px;height:220px;background:var(--line);position:relative}
+.depth .fill{position:absolute;left:-1px;top:0;width:3px;height:0;background:linear-gradient(var(--nacre),var(--pearl));border-radius:2px;transition:height .2s}
+.depth b{color:var(--ink2);font-weight:500}
+/* shared */
+section{padding:clamp(90px,12vw,150px) clamp(16px,5vw,64px);position:relative}
+.w{max-width:1120px;margin:0 auto}
+.tag{font:500 11px "Geist Mono";letter-spacing:.16em;text-transform:uppercase;color:var(--nacre);display:flex;gap:14px;align-items:center;margin-bottom:22px}
+.tag i{font-style:normal;color:var(--faint)}
+h2{font:500 clamp(34px,4.6vw,58px)/1.02 Geist;letter-spacing:-.045em;max-width:17ch}
+h2 em{font-style:normal;color:var(--mute)}
+.lede{color:var(--ink2);font-size:17px;max-width:58ch;margin-top:18px}
+.btn{display:inline-flex;align-items:center;gap:10px;font:500 14px Geist;padding:13px 20px;border-radius:999px;border:1px solid var(--line);color:var(--ink);background:rgba(255,255,255,.03);cursor:pointer;transition:transform .2s,background .2s,border-color .2s}
+.btn:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.25)}
+.btn.p{background:var(--ink);color:#000;border-color:var(--ink)}
+.btn.p:hover{background:#fff}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.01));border:1px solid var(--line);border-radius:20px;backdrop-filter:blur(6px)}
+input,textarea,select{width:100%;background:rgba(0,0,0,.5);border:1px solid var(--line);border-radius:12px;color:var(--ink);font:400 14px "Geist Mono";padding:12px 14px;outline:none;transition:border-color .2s}
+input:focus,textarea:focus{border-color:var(--nacre)}
+textarea{resize:vertical;min-height:84px;line-height:1.5}
+label{display:block;font:500 10px "Geist Mono";letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin:0 0 7px}
+.f{margin-bottom:14px}
+.rv{opacity:0;transform:translateY(14px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+/* hero */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding-top:110px;padding-bottom:70px}
+#asc{width:min(820px,96vw);aspect-ratio:36/25;display:block;filter:drop-shadow(0 0 22px rgba(185,168,240,.18))}
+.hero h1{font:500 clamp(40px,6.4vw,86px)/.98 Geist;letter-spacing:-.055em;margin-top:6px}
+.hero h1 span{color:var(--mute)}
+.hero p{color:var(--ink2);max-width:52ch;margin:18px auto 0;font-size:17px}
+.hero .btns{display:flex;gap:10px;justify-content:center;margin-top:30px;flex-wrap:wrap}
+.status{margin-top:34px;font:400 11px "Geist Mono";color:var(--faint);letter-spacing:.06em;display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.status b{color:var(--mute);font-weight:400}
+.whisper{margin-top:44px;font:400 12px "Geist Mono";letter-spacing:.28em;color:var(--mute);filter:blur(.5px);text-shadow:0 0 12px rgba(185,168,240,.6)}
+/* race */
+.race{display:grid;gap:14px;margin-top:44px}
+.lane{padding:22px;border-radius:18px}
+.lane h4{font:500 13px "Geist Mono";letter-spacing:.08em;text-transform:uppercase;color:var(--mute);display:flex;justify-content:space-between;margin-bottom:16px}
+.lane h4 b{color:var(--ink);font-weight:500}
+.blocks{display:grid;grid-template-columns:repeat(12,1fr);gap:6px}
+.blk{height:74px;border-radius:10px;border:1px solid var(--line2);background:rgba(255,255,255,.02);padding:8px;display:flex;flex-direction:column;justify-content:space-between;font:400 10px/1.25 "Geist Mono";color:var(--faint);transition:all .35s}
+.blk .n{color:var(--faint)}
+.blk.on{color:var(--ink);border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.06)}
+.blk.bad.on{background:rgba(255,138,138,.12);border-color:rgba(255,138,138,.35);color:#FFD0D0}
+.blk.you.on{background:rgba(245,199,126,.12);border-color:rgba(245,199,126,.35);color:#FFE7BF}
+.blk.good.on{background:rgba(185,168,240,.14);border-color:rgba(185,168,240,.4);color:#E9E2FF}
+.blk.open.on{background:var(--ink);color:#000;border-color:var(--ink)}
+.race-cap{font:400 12px "Geist Mono";color:var(--mute);margin-top:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+/* shell */
+.foes{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:44px}
+.foe{padding:24px;border-radius:18px;min-height:190px;display:flex;flex-direction:column;justify-content:flex-end;transition:border-color .3s,transform .3s}
+.foe:hover{border-color:rgba(185,168,240,.35);transform:translateY(-3px)}
+.foe pre{font:11px/12px "Geist Mono";color:var(--nacre);margin-bottom:auto}
+.foe h3{font:500 21px Geist;letter-spacing:-.03em}
+.foe .x{font:500 10px "Geist Mono";letter-spacing:.14em;color:var(--red);text-transform:uppercase;margin:18px 0 6px}
+.spec{display:grid;grid-template-columns:repeat(7,1fr);margin-top:12px;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:rgba(255,255,255,.015)}
+.spec div{padding:16px 16px 18px;border-left:1px solid var(--line2)}.spec div:first-child{border-left:0}
+.spec small{display:block;font:500 10px "Geist Mono";letter-spacing:.12em;color:var(--mute);text-transform:uppercase;margin-bottom:8px}
+.spec b{font:500 14px "Geist Mono";color:var(--pearl)}
+/* console */
+.con-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
+.tabs{display:flex;gap:4px;padding:4px;border:1px solid var(--line);border-radius:999px;background:rgba(10,10,13,.7)}
+.tab{font:500 12px "Geist Mono";letter-spacing:.06em;color:var(--mute);padding:9px 16px;border-radius:999px;border:0;background:none;cursor:pointer}
+.tab.on{background:var(--ink);color:#000}
+.panel{display:none}.panel.on{display:block;animation:pin .5s cubic-bezier(.2,.7,.2,1)}
+@keyframes pin{from{opacity:0;transform:translateY(8px)}}
+.row-b{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+/* seal */
+.seal{display:grid;grid-template-columns:1.05fr .95fr;gap:14px;margin-top:28px}
+.pane{padding:26px;border-radius:20px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hash{font:400 12px/1.6 "Geist Mono";word-break:break-all;color:var(--pearl);background:rgba(0,0,0,.55);border:1px dashed rgba(185,168,240,.35);border-radius:12px;padding:12px 14px;min-height:48px}
+.hash.empty{color:var(--faint)}
+.sealed-card{border-radius:18px;padding:22px;background:radial-gradient(120% 80% at 50% 0,rgba(185,168,240,.10),transparent 60%),#07070A;border:1px solid var(--line);position:relative;overflow:hidden}
+.sealed-card pre{font:9px/9px "Geist Mono";color:var(--nacre2);text-align:center;margin:6px 0 16px}
+.sealed-card .nm{font:600 22px Geist;letter-spacing:-.03em}
+.redact{display:inline-block;background:repeating-linear-gradient(90deg,#1B1A22 0 8px,#24222D 8px 16px);border-radius:4px;color:transparent;user-select:none}
+.kv{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:16px}
+.kv div{border:1px solid var(--line2);border-radius:12px;padding:10px 12px}
+.kv small{display:block;font:500 9px "Geist Mono";letter-spacing:.14em;color:var(--mute);text-transform:uppercase}
+.kv b{font:500 14px "Geist Mono"}
+.hint{color:var(--ink2);font-size:14px;margin-top:10px;font-style:italic}
+.note{font:400 11px "Geist Mono";color:var(--faint);margin-top:12px;line-height:1.6}
+.ok{color:var(--live)}.bad{color:var(--red)}
+/* open sim */
+.sim{display:grid;grid-template-columns:.9fr 1.1fr;gap:14px;margin-top:28px}
+.rng{width:100%;accent-color:#B9A8F0;padding:0;border:0;background:none}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font:500 12px "Geist Mono";padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--mute);cursor:pointer}
+.chip.on{background:var(--ink);color:#000;border-color:var(--ink)}
+.stage{position:relative;border-radius:20px;overflow:hidden;min-height:420px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:26px;background:radial-gradient(90% 70% at 50% 40%,rgba(185,168,240,.08),transparent 70%),#050507}
+#simc{width:min(460px,100%);aspect-ratio:36/25}
+.bar{width:100%;height:6px;border-radius:9px;background:rgba(255,255,255,.07);overflow:hidden;margin-top:16px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--nacre2),var(--pearl));transition:width .5s}
+.reveal{font:600 26px Geist;letter-spacing:-.03em;margin-top:14px;min-height:36px}
+.illus{position:absolute;top:14px;left:16px;font:500 9px "Geist Mono";letter-spacing:.16em;color:var(--faint)}
+.out{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:18px}
+.out div{border:1px solid var(--line2);border-radius:12px;padding:12px 14px}
+.out small{display:block;font:500 9px "Geist Mono";letter-spacing:.14em;color:var(--mute);text-transform:uppercase;margin-bottom:4px}
+.out b{font:500 17px "Geist Mono"}
+/* verify */
+.ver{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:28px}
+.verdict{margin-top:14px;font:500 13px "Geist Mono";padding:12px 14px;border-radius:12px;border:1px solid var(--line)}
+/* faq */
+.faq{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:44px;align-items:start}
+details{border:1px solid var(--line);border-radius:16px;padding:18px 20px;background:rgba(255,255,255,.02)}
+summary{list-style:none;cursor:pointer;font-weight:500;display:flex;justify-content:space-between;gap:16px}
+summary::after{content:"+";font-family:"Geist Mono";color:var(--mute)}
+details[open] summary::after{content:"−"}
+details p{color:var(--ink2);font-size:14px;margin-top:10px}
+/* end */
+.end{text-align:center;padding-bottom:150px}
+.end .big{font:500 clamp(30px,4.4vw,56px)/1.1 Geist;letter-spacing:-.045em;max-width:22ch;margin:0 auto}
+.end .big span{color:var(--mute)}
+.end pre{font:10px/10px "Geist Mono";color:var(--nacre2);margin:34px auto 0;display:inline-block;text-align:left}
+footer{border-top:1px solid var(--line2);padding:22px clamp(16px,5vw,64px);font:400 11px "Geist Mono";color:var(--faint);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+@media (max-width:980px){
+ .links{display:none}.depth{display:none}
+ .foes{grid-template-columns:1fr 1fr}
+ .seal,.sim,.ver,.faq{grid-template-columns:1fr}
+ .spec{grid-template-columns:repeat(4,1fr)}.spec div:nth-child(5){border-left:0}.spec div:nth-child(n+5){border-top:1px solid var(--line2)}
+ .blocks{grid-template-columns:repeat(6,1fr)}
+}
+@media (max-width:560px){.foes{grid-template-columns:1fr 1fr}.foe{min-height:160px;padding:18px}.foe h3{font-size:17px}.spec{grid-template-columns:1fr 1fr}.spec div{border-left:0!important;border-top:1px solid var(--line2)}.spec div:nth-child(2n){border-left:1px solid var(--line2)!important}.spec div:first-child,.spec div:nth-child(2){border-top:0}.tabs{width:100%}.tab{flex:1;padding:9px 6px}.kv{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}.ca span{display:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<canvas id="bub" aria-hidden="true"></canvas><div class="veil"></div>
+
+<nav>
+ <a class="brand" href="#deep" aria-label="CLAM home"><pre aria-hidden="true"> .-~-.
+(  @  )
+ '-~-'</pre>clam</a>
+ <div class="links"><a href="#deep" class="on">deep</a><a href="#race">race</a><a href="#rules">shell</a><a href="#console">console</a><a href="#faq">faq</a></div>
+ <div class="ca"><i class="dot"></i><span>CA</span>&nbsp;sealed</div>
+</nav>
+
+<div class="depth" aria-hidden="true"><b id="dm">−0m</b><div class="track"><div class="fill" id="df"></div></div><span>the deep</span></div>
+
+<main>
+<!-- HERO -->
+<section class="hero" id="deep">
+ <canvas id="asc" aria-label="An ASCII clam opening and closing around a pearl"></canvas>
+ <h1>you can't snipe<br><span>what you can't see.</span></h1>
+ <p>Every coin launches sealed. The name stays hidden until it fills.</p>
+ <div class="btns"><a class="btn p" href="#console">Seal a coin</a><a class="btn" href="#race">How it opens ↓</a></div>
+ <div class="status m"><span><b>solana</b> · slot <b id="slot">—</b></span><span>SOL <b id="solp">—</b></span><span>seals filed <b>000</b></span></div>
+ <div class="whisper">YOU ARE NOT EARLY · YOU ARE NOT LATE · YOU ARE INSIDE</div>
+</section>
+
+<!-- RACE -->
+<section id="race"><div class="w">
+ <div class="tag rv">−40m <i>/</i> same coin, two launches</div>
+ <h2 class="rv">Decided in block 0. <em>Or not at all.</em></h2>
+ <div class="race">
+  <div class="lane card rv"><h4><b>a normal launch</b><span id="t1">block 0</span></h4><div class="blocks" id="lane1"></div></div>
+  <div class="lane card rv"><h4><b>a clam</b><span id="t2">day 1</span></h4><div class="blocks" id="lane2"></div></div>
+ </div>
+ <div class="race-cap rv"><span>illustration · sped up</span><button class="chip" id="replay">↻ replay</button></div>
+</div></section>
+
+<!-- SHELL: foes + rules -->
+<section id="rules" style="padding-top:0"><div class="w">
+ <div class="tag rv">−90m <i>/</i> the shell</div>
+ <h2 class="rv">Sealed against <em>all four.</em></h2>
+ <div class="foes">
+  <div class="foe card rv"><pre>  >>>--->
+ >>>--->  @
+  >>>---></pre><div class="x">sniped</div><h3>Nothing to race.</h3></div>
+  <div class="foe card rv"><pre>   $$$
+  [===]
+   \_/  x</pre><div class="x">rugged</div><h3>Nothing to pull.</h3></div>
+  <div class="foe card rv"><pre> (o)(o)
+  \  /
+   ??</pre><div class="x">insiders</div><h3>No early seat.</h3></div>
+  <div class="foe card rv"><pre> $DOG
+ $D0G
+ $DOGG</pre><div class="x">vamped</div><h3>No name to copy.</h3></div>
+ </div>
+ <div class="spec rv">
+  <div><small>01 · seal</small><b>sha-256</b></div>
+  <div><small>02 · hint</small><b>280 chars</b></div>
+  <div><small>03 · raise</small><b>10–100 SOL</b></div>
+  <div><small>04 · cap</small><b>2% / wallet</b></div>
+  <div><small>05 · price</small><b>one for all</b></div>
+  <div><small>06 · open</small><b>one tx · LP locked</b></div>
+  <div><small>07 · tide</small><b>full refund</b></div>
+ </div>
+</div></section>
+
+<!-- CONSOLE -->
+<section id="console"><div class="w">
+ <div class="tag rv">−180m <i>/</i> the console</div>
+ <div class="con-head rv"><h2>Try it. <em>It works now.</em></h2>
+  <div class="tabs" role="tablist"><button class="tab on" data-t="seal" role="tab">01 seal</button><button class="tab" data-t="open" role="tab">02 open</button><button class="tab" data-t="verify" role="tab">03 verify</button></div></div>
+
+ <!-- seal -->
+ <div class="panel on" id="p-seal"><div class="seal">
+  <div class="pane card">
+   <div class="two"><div class="f"><label for="sn">Name</label><input id="sn" maxlength="32" placeholder="the name nobody sees"></div><div class="f"><label for="st">Ticker</label><input id="st" maxlength="10" placeholder="TICKER"></div></div>
+   <div class="f"><label for="sh">Hint · the only public line</label><textarea id="sh" maxlength="280" placeholder="Something is sleeping in this shell…"></textarea></div>
+   <div class="f"><label for="si">Art · hashed locally</label><input id="si" type="file" accept="image/*"></div>
+   <div class="two"><div class="f"><label>Raise</label><div class="chips" id="sr"><button class="chip" data-v="10">10</button><button class="chip on" data-v="25">25</button><button class="chip" data-v="50">50</button><button class="chip" data-v="100">100 SOL</button></div></div><div class="f"><label>Deadline</label><div class="chips" id="sd"><button class="chip" data-v="1">1d</button><button class="chip on" data-v="3">3d</button><button class="chip" data-v="7">7d</button></div></div></div>
+   <div class="row-b"><button class="btn p" id="doseal">Seal it</button><button class="btn" id="dl" disabled>Receipt ↓</button></div>
+   <p class="note">Salt made in your browser. Nothing uploaded.</p>
+  </div>
+  <div class="pane card">
+   <label>Public seal</label>
+   <div class="hash empty" id="seal-out">— press seal —</div>
+   <div class="sealed-card" style="margin-top:16px">
+    <pre id="mini"></pre>
+    <div class="nm"><span class="redact" id="rn">████████████</span></div>
+    <div class="m" style="color:var(--mute);font-size:12px;margin-top:4px">$<span class="redact" id="rt">█████</span></div>
+    <div class="hint" id="hintout">"Something is sleeping in this shell…"</div>
+    <div class="kv"><div><small>raise</small><b id="kr">25 SOL</b></div><div><small>closes</small><b id="kd">3d</b></div><div><small>cap</small><b id="kc">0.5 SOL</b></div></div>
+   </div>
+  </div>
+ </div></div>
+
+ <!-- open -->
+ <div class="panel" id="p-open"><div class="sim">
+  <div class="pane card">
+   <div class="f"><label>Raise</label><div class="chips" id="rr"><button class="chip" data-v="10">10</button><button class="chip on" data-v="25">25</button><button class="chip" data-v="50">50</button><button class="chip" data-v="100">100 SOL</button></div></div>
+   <div class="f"><label for="yin">You put in (SOL)</label><input id="yin" type="number" min="0.01" step="0.05" value="0.25"></div>
+   <div class="f"><label for="tide">Tide · <span id="tv">40%</span></label><input class="rng" id="tide" type="range" min="0" max="100" value="40"></div>
+   <div class="out">
+    <div><small>share</small><b id="o1">—</b></div>
+    <div><small>tokens</small><b id="o2">—</b></div>
+    <div><small>price · everyone</small><b id="o3">—</b></div>
+    <div><small>value at open</small><b id="o4">—</b></div>
+   </div>
+   <p class="note" id="capnote">1B supply · 50% to wallets inside · 50% in the pool.</p>
+  </div>
+  <div class="stage card">
+   <span class="illus">ILLUSTRATION</span>
+   <canvas id="simc" aria-label="A clam filling and opening"></canvas>
+   <div class="bar"><i id="sb"></i></div>
+   <div class="reveal m" id="rev">sealed</div>
+   <button class="chip" id="fill" style="margin-top:12px">fill to 100% →</button>
+  </div>
+ </div></div>
+
+ <!-- verify -->
+ <div class="panel" id="p-verify"><div class="ver">
+  <div class="pane card">
+   <div class="f"><label for="vs">Public seal</label><input id="vs" placeholder="64 hex"></div>
+   <div class="two"><div class="f"><label for="vn">Name</label><input id="vn"></div><div class="f"><label for="vt">Ticker</label><input id="vt"></div></div>
+   <div class="f"><label for="vsalt">Salt</label><input id="vsalt" placeholder="64 hex"></div>
+   <div class="f"><label for="vi">Art hash · optional</label><input id="vi" placeholder="sha-256"></div>
+   <div class="row-b"><button class="btn p" id="dover">Verify</button><button class="btn" id="fillv">Use my seal</button></div>
+  </div>
+  <div class="pane card">
+   <label>Result</label>
+   <div class="verdict m" id="vout">Waiting for a seal.</div>
+   <label style="margin-top:18px">Recomputed</label>
+   <div class="hash empty" id="vcalc">—</div>
+   <p class="note">sha-256( clam:v1 | name | TICKER | art | salt )</p>
+  </div>
+ </div></div>
+</div></section>
+
+<!-- FAQ -->
+<section id="faq"><div class="w">
+ <div class="tag rv">−300m <i>/</i> faq</div>
+ <h2 class="rv">Asked in <em>the deep.</em></h2>
+ <div class="faq">
+  <details class="rv"><summary>What is CLAM?</summary><p>A Solana launchpad where every coin fills sealed, then deploys, reveals and opens its pool in one step.</p></details>
+  <details class="rv"><summary>What can I see before I buy?</summary><p>The hint, raise, deadline, cap, fill and the public seal. Not the name, ticker or art.</p></details>
+  <details class="rv"><summary>Why buy what you can't see?</summary><p>Everyone buys the same thing, on the same terms. The hint is the pitch. The reveal is the moment.</p></details>
+  <details class="rv"><summary>How are snipers stopped?</summary><p>The token doesn't exist while it fills. It's created and pooled in the same transaction.</p></details>
+  <details class="rv"><summary>How are rugs stopped?</summary><p>LP locked at open. Mint and freeze revoked. No dev bag.</p></details>
+  <details class="rv"><summary>How are insiders stopped?</summary><p>No whitelist, no team allocation, one price, 2% cap. The creator included.</p></details>
+  <details class="rv"><summary>Can the creator swap the name?</summary><p>No. A different name gives a different fingerprint. Check it in the console.</p></details>
+  <details class="rv"><summary>Why the salt?</summary><p>Tickers are short and guessable. 32 random bytes make guessing impossible.</p></details>
+  <details class="rv"><summary>What if it never fills?</summary><p>It never opens. Everyone takes back exactly what they put in.</p></details>
+  <details class="rv"><summary>What does $CLAM do?</summary><p>Every clam that opens pays a fee that buys back and burns $CLAM.</p></details>
+  <details class="rv"><summary>Is it live?</summary><p>The seal and verify tools are. The escrow program ships next.</p></details>
+  <details class="rv"><summary>Where is the CA?</summary><p>Sealed. Only this site and the CLAM account post it.</p></details>
+ </div>
+</div></section>
+
+<section class="end">
+ <div class="big rv">you are not early. you are not late. <span>you are inside.</span></div>
+ <pre aria-hidden="true">      .-~~~~~~-.
+    .'  \  |  /  '.
+   /  --  (@)  --  \
+   '.  /  |  \  .'
+     '-.______.-'</pre>
+ <div style="margin-top:34px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><a class="btn p" href="#console">Seal a coin</a><a class="btn" href="#deep">Back up ↑</a></div>
+</section>
+</main>
+
+<footer><span>clam · sealed launches on solana</span><span>stay sealed.</span></footer>
+
+<script>
+const $=id=>document.getElementById(id);
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* ---------- falling dust (marine snow) ---------- */
+(()=>{const c=$('bub'),x=c.getContext('2d');let W,H,D=Math.min(devicePixelRatio||1,2),P=[],mx=-999,my=-999,boost=0,lastY=scrollY;
+function mk(top){const z=Math.random()**1.6;return{x:Math.random()*W,y:top?-8-Math.random()*40:Math.random()*H,z,r:.35+z*1.9,v:.15+z*.75,w:Math.random()*6.28,ws:.004+Math.random()*.012,sw:4+z*14,t:Math.random()*6.28,k:Math.random()<.22}}
+function sz(){const w=innerWidth,h=innerHeight;if(Math.abs(w-W)<2&&Math.abs(h-H)<120&&P.length)return;W=w;H=h;c.width=W*D;c.height=H*D;x.setTransform(D,0,0,D,0,0);P=Array.from({length:Math.min(260,Math.round(W*H/6000))},()=>mk(0))}
+addEventListener('resize',sz);sz();
+addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY},{passive:true});
+addEventListener('scroll',()=>{boost+=(scrollY-lastY)*.06;lastY=scrollY},{passive:true});
+function f(){x.clearRect(0,0,W,H);boost*=.9;
+ for(const p of P){p.y+=p.v+boost*p.z;p.w+=p.ws;p.t+=.03;let px=p.x+Math.sin(p.w)*p.sw;
+  const dx=px-mx,dy=p.y-my,d2=dx*dx+dy*dy;if(d2<9000){const f=(1-d2/9000)*1.6;p.x+=dx/Math.sqrt(d2+1)*f;p.y+=dy/Math.sqrt(d2+1)*f*.4}
+  if(p.y>H+10)Object.assign(p,mk(1));if(p.y<-60)p.y=H+5;
+  const a=(.12+p.z*.6)*(.75+.25*Math.sin(p.t));
+  if(p.z>.7){x.fillStyle=p.k?`rgba(185,168,240,${a*.12})`:`rgba(255,244,226,${a*.1})`;x.beginPath();x.arc(px,p.y,p.r*3.2,0,7);x.fill()}
+  x.fillStyle=p.k?`rgba(185,168,240,${a})`:`rgba(242,236,226,${a})`;x.beginPath();x.arc(px,p.y,p.r,0,7);x.fill()}
+ if(!RM)requestAnimationFrame(f)}f()})();
+
+/* ---------- ASCII clam renderer (procedural, live) ---------- */
+const BOT=new Path2D('M36,122 C40,182 152,192 180,122 Q112,138 36,122 Z');
+const LID=new Path2D('M36,112 C22,36 126,2 168,56 Q112,96 36,112 Z');
+const NACL=new Path2D('M46,106 C38,52 116,22 158,60 Q112,92 46,106 Z');
+const NACB=new Path2D('M48,124 Q112,139 170,124 C150,152 76,156 48,124 Z');
+function ribs(ctx,hx,hy,pts){ctx.beginPath();for(const [x,y] of pts){ctx.moveTo(hx,hy);ctx.quadraticCurveTo((hx+x)/2+(y-hy)*.1,(hy+y)/2-(x-hx)*.05,x,y)}ctx.stroke()}
+function cub(p,t){return [0,1].map(i=>(1-t)**3*p[0][i]+3*(1-t)**2*t*p[1][i]+3*(1-t)*t*t*p[2][i]+t**3*p[3][i])}
+const TS=[.1,.2,.3,.4,.5,.6,.7,.8,.9];
+const BPTS=TS.map(t=>cub([[36,122],[40,182],[152,192],[180,122]],t)), LPTS=TS.map(t=>cub([[36,112],[22,36],[126,2],[168,56]],t));
+function drawClam(ctx,open,glow){ // open: 0 closed .. 1 open
+ ctx.fillStyle='#000';ctx.fillRect(-50,-50,300,310);
+ const shell=ctx.createLinearGradient(0,0,200,210);shell.addColorStop(0,'#F4F6FA');shell.addColorStop(1,'#9AA2AF');
+ // bottom
+ ctx.save();ctx.clip(BOT);ctx.fillStyle=shell;ctx.fillRect(0,100,200,110);ctx.strokeStyle='#000';ctx.lineWidth=2.2;ribs(ctx,36,118,BPTS);ctx.fillStyle='#8F86BE';ctx.fill(NACB);ctx.restore();
+ // pearl + glow
+ if(open>.05){const a=Math.min(1,open*1.4);const g=ctx.createRadialGradient(114,118,4,114,118,40);g.addColorStop(0,`rgba(255,244,226,${.35*a*glow})`);g.addColorStop(1,'rgba(255,244,226,0)');ctx.fillStyle=g;ctx.fillRect(60,70,110,100);
+  const p=ctx.createRadialGradient(107,110,2,114,118,22);p.addColorStop(0,'#FFFFFF');p.addColorStop(.7,'#F2E9DD');p.addColorStop(1,'#B9AA92');ctx.fillStyle=p;ctx.beginPath();ctx.arc(114,118,21,0,7);ctx.fill()}
+ // lid rotated about hinge
+ ctx.save();ctx.translate(36,114);ctx.rotate((1-open)*0.52);ctx.translate(-36,-114);
+ ctx.save();ctx.clip(LID);ctx.fillStyle=shell;ctx.fillRect(0,-10,200,140);ctx.strokeStyle='#000';ctx.lineWidth=2.2;ribs(ctx,36,112,LPTS);ctx.fillStyle='#8F86BE';ctx.fill(NACL);ctx.restore();ctx.restore();
+ ctx.fillStyle='#C9CED6';ctx.beginPath();ctx.arc(36,116,7,0,7);ctx.fill();
+}
+const RAMP=' .·:-=+*#%@';
+function makeAscii(canvas,cols,rows){
+ const off=document.createElement('canvas');off.width=cols;off.height=rows;const o=off.getContext('2d',{willReadFrequently:true});
+ const ctx=canvas.getContext('2d');let cw,ch,D,last=null;
+ function size(){D=Math.min(devicePixelRatio||1,2);const r=canvas.getBoundingClientRect();canvas.width=r.width*D;canvas.height=r.height*D;cw=r.width/cols;ch=r.height/rows;if(last)render(...last)}
+ size();addEventListener('resize',size);
+ const render=function(open,glow){last=[open,glow];if(!cw)return;
+  o.setTransform(1,0,0,1,0,0);o.fillStyle='#000';o.fillRect(0,0,cols,rows);const sy=rows/215,sx=sy/0.6;o.setTransform(sx,0,0,sy,(cols-205*sx)/2,rows*.01);drawClam(o,open,glow);
+  const d=o.getImageData(0,0,cols,rows).data;ctx.setTransform(D,0,0,D,0,0);ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.font=`500 ${ch*1.02}px "Geist Mono",monospace`;ctx.textBaseline='top';ctx.textAlign='center';
+  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const i=(r*cols+c)*4,R=d[i],G=d[i+1],B=d[i+2],L=.3*R+.59*G+.11*B;if(L<14)continue;
+   const chr=RAMP[Math.min(RAMP.length-1,(L/256*RAMP.length)|0)];let col;
+   if(B>R+12)col='#B9A8F0';else if(R>215&&G>200&&B<235)col='#FFF4E2';else{const v=Math.min(255,(L*1.1+18)|0);col=`rgb(${v},${v},${Math.min(255,v+8)})`}
+   ctx.fillStyle=col;ctx.fillText(chr,c*cw+cw/2,r*ch)}
+ };render.size=size;return render
+}
+const hero=makeAscii($('asc'),96,40);
+let t0=performance.now();
+function heroLoop(t){const s=(t-t0)/1000;const open=RM?1:.62+.42*Math.sin(s*.7);hero(Math.max(0,Math.min(1,open)),.8+.2*Math.sin(s*2.1));if(!RM)setTimeout(()=>requestAnimationFrame(heroLoop),66)}
+(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>requestAnimationFrame(heroLoop));
+
+/* ---------- live strip ---------- */
+async function slot(){for(const u of ['https://solana-rpc.publicnode.com','https://api.mainnet-beta.solana.com']){try{const r=await fetch(u,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'getSlot'})});const j=await r.json();if(j.result){$('slot').textContent=j.result.toLocaleString('en-US');return}}catch(e){}}}
+async function sol(){for(const [u,f] of [['https://api.binance.com/api/v3/ticker/price?symbol=SOLUSDT',j=>+j.price],['https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd',j=>+j.solana.usd]]){try{const v=f(await (await fetch(u)).json());if(v>0){window.SOLUSD=v;$('solp').textContent='$'+v.toFixed(2);sim();return}}catch(e){}}}
+slot();sol();setInterval(slot,8000);setInterval(sol,60000);
+
+/* ---------- race replay ---------- */
+const L1=[['0','deploy · curve opens','open'],['0','bot buys bottom','bad'],['0','bundle · dev wallets','bad'],['1','insider #2','bad'],['1','sniper sells','bad'],['2','copycat $TICKER','bad'],['3','you land','you'],['3','price 6× up','bad'],['4','bots dump','bad'],['5','copycat #2','bad'],['6','chart bleeds','bad'],['7','you hold the top','you']];
+const L2=[['d1','sealed · hint only','good'],['d1','wallet ≤2%','good'],['d2','wallet ≤2%','good'],['d2','you · same price','you'],['d3','wallet ≤2%','good'],['d3','nobody knows the name','good'],['d4','wallet ≤2%','good'],['d5','87% full','good'],['d6','wallet ≤2%','good'],['d6','100% full','good'],['d6','deploy+reveal+pool','open'],['d6','everyone inside','good']];
+function lane(el,data){el.innerHTML=data.map(([n,t,k])=>`<div class="blk ${k}"><span class="n">${el.id==='lane1'?'blk '+n:n}</span><span>${t}</span></div>`).join('')}
+lane($('lane1'),L1);lane($('lane2'),L2);
+let raceT=null;function race(){clearInterval(raceT);const a=[...$('lane1').children],b=[...$('lane2').children];[...a,...b].forEach(e=>e.classList.remove('on'));let i=0;raceT=setInterval(()=>{if(i<12){a[i].classList.add('on');b[i].classList.add('on');$('t1').textContent='block '+L1[i][0];$('t2').textContent=L2[i][0].replace('d','day ');i++}else clearInterval(raceT)},RM?0:420)}
+$('replay').onclick=race;
+new IntersectionObserver((es,o)=>{es.forEach(e=>{if(e.isIntersecting){race();o.disconnect()}})},{threshold:.35}).observe($('race'));
+
+/* ---------- seal tool ---------- */
+const enc=new TextEncoder();
+const hex=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+async function sha(data){return hex(await crypto.subtle.digest('SHA-256',typeof data==='string'?enc.encode(data):data))}
+function norm(n,t){return [n.trim(),t.trim().replace(/^\$/,'').toUpperCase()]}
+let artHash='',SEAL=null;
+function chipGroup(id,cb){const g=$(id);g.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{g.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===b));cb(+b.dataset.v)})}
+let raise=25,days=3;chipGroup('sr',v=>{raise=v;$('kr').textContent=v+' SOL';$('kc').textContent=(v*.02).toFixed(2).replace(/\.?0+$/,'')+' SOL'});chipGroup('sd',v=>{days=v;$('kd').textContent=v+'d'});
+$('kc').textContent='0.5 SOL';
+$('sh').oninput=()=>{$('hintout').textContent='"'+($('sh').value.trim()||'Something is sleeping in this shell…')+'"'};
+$('si').onchange=async e=>{const f=e.target.files[0];artHash=f?await sha(await f.arrayBuffer()):''};
+$('doseal').onclick=async()=>{
+ const [n,t]=norm($('sn').value,$('st').value);
+ if(!n||!t){$('seal-out').className='hash';$('seal-out').innerHTML='<span class="bad">Give it a name and a ticker first.</span>';return}
+ const salt=hex(crypto.getRandomValues(new Uint8Array(32)));
+ const seal=await sha(`clam:v1|${n}|${t}|${artHash}|${salt}`);
+ SEAL={version:'clam:v1',seal,name:n,ticker:t,art_sha256:artHash,salt,hint:$('sh').value.trim(),raise_sol:raise,deadline_days:days,created:new Date().toISOString()};
+ $('seal-out').className='hash';$('seal-out').textContent=seal;
+ $('rn').textContent='█'.repeat(Math.max(6,n.length));$('rt').textContent='█'.repeat(Math.max(3,t.length));
+ $('dl').disabled=false;
+};
+$('dl').onclick=()=>{if(!SEAL)return;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(SEAL,null,2)],{type:'application/json'}));a.download='clam-seal-'+SEAL.seal.slice(0,8)+'.json';a.click()};
+// mini ascii clam on the sealed card
+$('mini').textContent=["   .-~~~~~~~~-.   ","  /  \\  |  /  \\  "," |-----------·--| ","  \\__/__|__\\__/  ","   '-.______.-'   "].join('\n');
+
+/* ---------- verify ---------- */
+$('fillv').onclick=()=>{if(!SEAL){$('vout').innerHTML='<span class="bad">Seal a coin above first.</span>';return}$('vs').value=SEAL.seal;$('vn').value=SEAL.name;$('vt').value=SEAL.ticker;$('vsalt').value=SEAL.salt;$('vi').value=SEAL.art_sha256;$('vout').textContent='Filled from your seal. Press verify, then try changing one letter.'};
+$('dover').onclick=async()=>{
+ const s=$('vs').value.trim().toLowerCase(),salt=$('vsalt').value.trim().toLowerCase();
+ if(!/^[0-9a-f]{64}$/.test(s)||!/^[0-9a-f]{64}$/.test(salt)){$('vout').innerHTML='<span class="bad">The seal and the salt must each be 64 hex characters.</span>';return}
+ const [n,t]=norm($('vn').value,$('vt').value);const art=$('vi').value.trim().toLowerCase();
+ const calc=await sha(`clam:v1|${n}|${t}|${art}|${salt}`);$('vcalc').className='hash';$('vcalc').textContent=calc;
+ $('vout').innerHTML=calc===s?'<span class="ok">✓ Match. This is exactly what was sealed.</span>':'<span class="bad">✗ No match. Something in the reveal differs from the seal.</span>';
+};
+
+/* ---------- open simulator ---------- */
+const simR=makeAscii($('simc'),96,40);let sraise=25,tide=40,anim=null;
+chipGroup('rr',v=>{sraise=v;sim()});
+$('tide').oninput=e=>{tide=+e.target.value;sim()};$('yin').oninput=sim;
+const SAMPLE='the deep one · $PEARL';
+function scramble(el,txt){const G='@#%*+=-:·';let i=0;clearInterval(el._t);el._t=setInterval(()=>{el.textContent=txt.split('').map((c,k)=>k<i?c:(c===' '?' ':G[(Math.random()*G.length)|0])).join('');if(++i>txt.length)clearInterval(el._t)},RM?0:40)}
+function sim(){
+ const yin=Math.max(0,+$('yin').value||0),cap=sraise*.02,eff=Math.min(yin,cap);
+ const sale=5e8,share=eff/sraise,tok=share*sale,price=sraise/sale; // SOL per token
+ $('tv').textContent=tide+'%';$('sb').style.width=tide+'%';
+ $('o1').textContent=(share*100).toFixed(2)+'%';
+ $('o2').textContent=tok>=1e6?(tok/1e6).toFixed(2)+'M':Math.round(tok).toLocaleString('en-US');
+ $('o3').textContent=(price*1e9).toFixed(0)+' lamports';
+ $('o4').textContent=window.SOLUSD?'$'+(eff*window.SOLUSD).toFixed(2):eff.toFixed(2)+' SOL';
+ $('capnote').innerHTML=yin>cap?`<span class="bad">Capped at 2% · max ${cap.toFixed(2)} SOL.</span>`:'1B supply · 50% to wallets inside · 50% in the pool.';
+ const open=tide>=100?1:0;simR(open?1:0,1);
+ if(tide>=100){if($('rev')._o!==1){$('rev')._o=1;scramble($('rev'),SAMPLE)}}else{$('rev')._o=0;$('rev').textContent=`sealed · ${(sraise*tide/100).toFixed(1)} / ${sraise} SOL`}
+}
+$('fill').onclick=()=>{clearInterval(anim);anim=setInterval(()=>{tide=Math.min(100,tide+2);$('tide').value=tide;if(tide>=100){clearInterval(anim);let k=0;const op=setInterval(()=>{k+=.08;simR(Math.min(1,k),1);if(k>=1)clearInterval(op)},40)}sim()},RM?0:40)};
+(document.fonts?document.fonts.ready:Promise.resolve()).then(sim);
+
+/* ---------- console tabs ---------- */
+function tab(t){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.t===t));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id==='p-'+t));if(t==='open'){simR.size();sim()}}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>tab(b.dataset.t));
+
+/* ---------- reveal on scroll, depth meter, nav ---------- */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+setTimeout(()=>document.querySelectorAll('.rv').forEach(el=>el.classList.add('in')),4000);
+const secs=['deep','race','rules','console','faq'];
+addEventListener('scroll',()=>{const h=document.documentElement,p=h.scrollTop/(h.scrollHeight-innerHeight||1);$('dm').textContent='−'+Math.round(p*320)+'m';$('df').style.height=(p*100)+'%';
+ let cur='deep';for(const s of secs){const el=$(s);if(el&&el.getBoundingClientRect().top<innerHeight*.35)cur=s}document.querySelectorAll('.links a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+cur))},{passive:true});
+</script>
+</body>
+</html>
