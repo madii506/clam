@@ -6,7 +6,7 @@
 <title>CLAM</title>
 <meta name="description" content="A Solana launchpad where every coin launches sealed. Name, ticker and art stay hidden until it fills. You can't snipe what you can't see.">
 <meta property="og:title" content="CLAM">
-<meta property="og:description" content="you are not early. you are not late. you are inside.">
+<meta property="og:description" content="You can't snipe what you can't see. Sealed launches on Solana.">
 <meta property="og:image" content="/og.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="/og.jpg">
@@ -17,8 +17,8 @@
 <style>
 :root{--bg:#000;--ink:#F2F0F7;--ink2:rgba(242,240,247,.72);--mute:#8C889C;--faint:#4A4757;--line:rgba(255,255,255,.09);--line2:rgba(255,255,255,.05);--card:#0A0A0D;--card2:#111116;--pearl:#FFF4E2;--nacre:#B9A8F0;--nacre2:#8F86BE;--live:#6EE7B7;--warn:#F5C77E;--red:#FF8A8A}
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;overflow-x:hidden}
-body{background:var(--bg);color:var(--ink);font:400 15px/1.6 Geist,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+html{scroll-behavior:smooth;overflow-x:clip}
+body{background:var(--bg);color:var(--ink);font:400 15px/1.6 Geist,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip}
 .m{font-family:"Geist Mono",ui-monospace,monospace}
 a{color:inherit;text-decoration:none}
 ::selection{background:var(--nacre);color:#000}
@@ -28,7 +28,7 @@ nav,main,footer{position:relative;z-index:2}
 /* nav */
 nav{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:14px clamp(16px,3vw,32px);background:linear-gradient(180deg,rgba(0,0,0,.85),rgba(0,0,0,0));}
 .brand{display:flex;align-items:center;gap:10px;font:600 17px Geist;letter-spacing:-.02em}
-.brand pre{font:9px/9px "Geist Mono";color:var(--nacre)}
+.brand pre{font:10px/10px "Geist Mono";color:var(--nacre);text-shadow:0 0 12px rgba(185,168,240,.5)}
 .links{display:flex;gap:4px;padding:4px;border:1px solid var(--line);border-radius:999px;background:rgba(10,10,13,.6);backdrop-filter:blur(10px)}
 .links a{font:500 12px "Geist Mono";letter-spacing:.06em;color:var(--mute);padding:7px 13px;border-radius:999px;text-transform:lowercase}
 .links a:hover{color:var(--ink)}.links a.on{color:#000;background:var(--ink)}
@@ -62,29 +62,53 @@ label{display:block;font:500 10px "Geist Mono";letter-spacing:.14em;text-transfo
 .rv{opacity:0;transform:translateY(14px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
 .rv.in{opacity:1;transform:none}
 /* hero */
-.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding-top:110px;padding-bottom:70px}
-#asc{width:min(820px,96vw);aspect-ratio:36/25;display:block;filter:drop-shadow(0 0 22px rgba(185,168,240,.18))}
-.hero h1{font:500 clamp(40px,6.4vw,86px)/.98 Geist;letter-spacing:-.055em;margin-top:6px}
-.hero h1 span{color:var(--mute)}
-.hero p{color:var(--ink2);max-width:52ch;margin:18px auto 0;font-size:17px}
-.hero .btns{display:flex;gap:10px;justify-content:center;margin-top:30px;flex-wrap:wrap}
-.status{margin-top:34px;font:400 11px "Geist Mono";color:var(--faint);letter-spacing:.06em;display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
-.status b{color:var(--mute);font-weight:400}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding-top:90px;padding-bottom:60px}
+.orb{position:relative;display:grid;place-items:center}
+.orb::before{content:"";position:absolute;width:70%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(185,168,240,.16),rgba(185,168,240,.04) 45%,transparent 70%);filter:blur(10px);animation:breathe 6s ease-in-out infinite}
+@keyframes breathe{50%{transform:scale(1.12);opacity:.7}}
+#asc{position:relative;width:min(470px,84vw);aspect-ratio:36/25;display:block;cursor:pointer;filter:drop-shadow(0 0 18px rgba(185,168,240,.2))}
+.hero .btns{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.status{margin-top:26px;font:400 11px "Geist Mono";color:var(--faint);letter-spacing:.06em;display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.status b{color:var(--mute);font-weight:400}.status span{display:inline-flex;align-items:center;gap:6px}
 .whisper{margin-top:44px;font:400 12px "Geist Mono";letter-spacing:.28em;color:var(--mute);filter:blur(.5px);text-shadow:0 0 12px rgba(185,168,240,.6)}
 /* race */
 .race{display:grid;gap:14px;margin-top:44px}
 .lane{padding:22px;border-radius:18px}
 .lane h4{font:500 13px "Geist Mono";letter-spacing:.08em;text-transform:uppercase;color:var(--mute);display:flex;justify-content:space-between;margin-bottom:16px}
 .lane h4 b{color:var(--ink);font-weight:500}
-.blocks{display:grid;grid-template-columns:repeat(12,1fr);gap:6px}
-.blk{height:74px;border-radius:10px;border:1px solid var(--line2);background:rgba(255,255,255,.02);padding:8px;display:flex;flex-direction:column;justify-content:space-between;font:400 10px/1.25 "Geist Mono";color:var(--faint);transition:all .35s}
+.race>*{min-width:0}.blocks{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:6px}
+.blk{overflow:hidden;overflow-wrap:anywhere;height:74px;border-radius:10px;border:1px solid var(--line2);background:rgba(255,255,255,.02);padding:8px;display:flex;flex-direction:column;justify-content:space-between;font:400 10px/1.25 "Geist Mono";color:var(--faint);transition:all .35s}
 .blk .n{color:var(--faint)}
 .blk.on{color:var(--ink);border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.06)}
 .blk.bad.on{background:rgba(255,138,138,.12);border-color:rgba(255,138,138,.35);color:#FFD0D0}
 .blk.you.on{background:rgba(245,199,126,.12);border-color:rgba(245,199,126,.35);color:#FFE7BF}
 .blk.good.on{background:rgba(185,168,240,.14);border-color:rgba(185,168,240,.4);color:#E9E2FF}
 .blk.open.on{background:var(--ink);color:#000;border-color:var(--ink)}
-.race-cap{font:400 12px "Geist Mono";color:var(--mute);margin-top:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.race-cap{font:400 12px "Geist Mono";color:var(--mute);margin-top:12px;display:flex;justify-content:flex-end;gap:12px;flex-wrap:wrap}
+/* tide */
+.tide{height:340vh;padding:0}
+.tide-in{position:sticky;top:0;height:100vh;max-width:1120px;margin:0 auto;padding:0 clamp(16px,5vw,64px);display:grid;grid-template-columns:230px 1fr;align-items:center;gap:30px}
+.steps{display:flex;flex-direction:column;gap:6px;border-left:1px solid var(--line)}
+.st{padding:12px 0 12px 20px;position:relative;color:var(--faint);transition:color .4s}
+.st::before{content:"";position:absolute;left:-1px;top:0;bottom:0;width:1px;background:var(--nacre);transform:scaleY(0);transition:transform .5s;transform-origin:top}
+.st i{font-style:normal;font-size:10px;letter-spacing:.14em;margin-right:10px}
+.st b{font:500 20px Geist;letter-spacing:-.02em}
+.st small{display:block;font-size:11px;margin-top:4px;opacity:0;max-height:0;transition:all .4s;color:var(--mute)}
+.st.on{color:var(--ink)}.st.on::before{transform:scaleY(1)}.st.on small{opacity:1;max-height:20px}
+.st.done{color:var(--mute)}
+.tide-stage{display:flex;flex-direction:column;align-items:center;text-align:center}
+#tc{width:min(560px,86vw);aspect-ratio:36/25;display:block}
+.tname{font-size:clamp(18px,2.2vw,26px);color:var(--pearl);margin-top:6px;min-height:34px;letter-spacing:-.01em}
+.tbar{font-size:clamp(10px,1.2vw,13px);color:var(--nacre);margin-top:10px;letter-spacing:.02em;white-space:pre}
+.tstats{display:flex;gap:22px;margin-top:14px;font-size:12px;color:var(--mute);flex-wrap:wrap;justify-content:center}
+.tstats b{color:var(--ink);font-weight:500}
+.tchk{color:var(--live);display:none}.tchk.on{display:inline;animation:pin .5s}
+.tname.hid{color:#34313F}
+/* card spotlight */
+.card{position:relative}
+.card::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(420px circle at var(--mx,-999px) var(--my,-999px),rgba(185,168,240,.09),transparent 45%);opacity:0;transition:opacity .35s}
+.card:hover::after{opacity:1}
 /* shell */
 .foes{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:44px}
 .foe{padding:24px;border-radius:18px;min-height:190px;display:flex;flex-direction:column;justify-content:flex-end;transition:border-color .3s,transform .3s}
@@ -148,17 +172,19 @@ summary::after{content:"+";font-family:"Geist Mono";color:var(--mute)}
 details[open] summary::after{content:"−"}
 details p{color:var(--ink2);font-size:14px;margin-top:10px}
 /* end */
-.end{text-align:center;padding-bottom:150px}
-.end .big{font:500 clamp(30px,4.4vw,56px)/1.1 Geist;letter-spacing:-.045em;max-width:22ch;margin:0 auto}
-.end .big span{color:var(--mute)}
-.end pre{font:10px/10px "Geist Mono";color:var(--nacre2);margin:34px auto 0;display:inline-block;text-align:left}
-footer{border-top:1px solid var(--line2);padding:22px clamp(16px,5vw,64px);font:400 11px "Geist Mono";color:var(--faint);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.end{text-align:center;padding-top:60px;padding-bottom:120px;display:flex;flex-direction:column;align-items:center}
+.pfp{position:relative;width:min(280px,64vw);aspect-ratio:1;animation:float 7s ease-in-out infinite}
+.pfp::before{content:"";position:absolute;inset:-40%;border-radius:50%;background:radial-gradient(circle,rgba(185,168,240,.18),transparent 62%);filter:blur(8px);z-index:-1}
+.pfp img{width:100%;height:100%;display:block;border-radius:50%;border:1px solid rgba(185,168,240,.28);box-shadow:0 0 0 6px rgba(185,168,240,.04),0 30px 80px -20px rgba(185,168,240,.35)}
+@keyframes float{50%{transform:translateY(-10px)}}
+.end .btns{display:flex;gap:10px;justify-content:center;margin-top:28px;flex-wrap:wrap}
 @media (max-width:980px){
+ .tide-in{grid-template-columns:1fr;align-content:center;gap:10px}.steps{flex-direction:row;border-left:0;border-bottom:1px solid var(--line);justify-content:space-between;gap:0}.st{padding:8px 4px 10px;text-align:center;flex:1}.st::before{left:0;right:0;top:auto;bottom:-1px;width:auto;height:1px;transform:scaleX(0);transform-origin:left}.st.on::before{transform:scaleX(1)}.st b{font-size:14px;display:block}.st i{margin:0;display:block}.st small{display:none}
  .links{display:none}.depth{display:none}
  .foes{grid-template-columns:1fr 1fr}
  .seal,.sim,.ver,.faq{grid-template-columns:1fr}
  .spec{grid-template-columns:repeat(4,1fr)}.spec div:nth-child(5){border-left:0}.spec div:nth-child(n+5){border-top:1px solid var(--line2)}
- .blocks{grid-template-columns:repeat(6,1fr)}
+ .blocks{grid-template-columns:repeat(6,minmax(0,1fr))}
 }
 @media (max-width:560px){.foes{grid-template-columns:1fr 1fr}.foe{min-height:160px;padding:18px}.foe h3{font-size:17px}.spec{grid-template-columns:1fr 1fr}.spec div{border-left:0!important;border-top:1px solid var(--line2)}.spec div:nth-child(2n){border-left:1px solid var(--line2)!important}.spec div:first-child,.spec div:nth-child(2){border-top:0}.tabs{width:100%}.tab{flex:1;padding:9px 6px}.kv{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}.ca span{display:none}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -170,8 +196,8 @@ footer{border-top:1px solid var(--line2);padding:22px clamp(16px,5vw,64px);font:
 <nav>
  <a class="brand" href="#deep" aria-label="CLAM home"><pre aria-hidden="true"> .-~-.
 (  @  )
- '-~-'</pre>clam</a>
- <div class="links"><a href="#deep" class="on">deep</a><a href="#race">race</a><a href="#rules">shell</a><a href="#console">console</a><a href="#faq">faq</a></div>
+ '-~-'</pre></a>
+ <div class="links"><a href="#deep" class="on">deep</a><a href="#race">race</a><a href="#tide">tide</a><a href="#rules">shell</a><a href="#console">console</a><a href="#faq">faq</a></div>
  <div class="ca"><i class="dot"></i><span>CA</span>&nbsp;sealed</div>
 </nav>
 
@@ -180,12 +206,10 @@ footer{border-top:1px solid var(--line2);padding:22px clamp(16px,5vw,64px);font:
 <main>
 <!-- HERO -->
 <section class="hero" id="deep">
- <canvas id="asc" aria-label="An ASCII clam opening and closing around a pearl"></canvas>
- <h1>you can't snipe<br><span>what you can't see.</span></h1>
- <p>Every coin launches sealed. The name stays hidden until it fills.</p>
- <div class="btns"><a class="btn p" href="#console">Seal a coin</a><a class="btn" href="#race">How it opens ↓</a></div>
- <div class="status m"><span><b>solana</b> · slot <b id="slot">—</b></span><span>SOL <b id="solp">—</b></span><span>seals filed <b>000</b></span></div>
- <div class="whisper">YOU ARE NOT EARLY · YOU ARE NOT LATE · YOU ARE INSIDE</div>
+ <h1 class="sr">CLAM · sealed launches on Solana</h1>
+ <div class="orb"><canvas id="asc" aria-label="An ASCII clam opening and closing around a pearl"></canvas></div>
+ <div class="btns"><a class="btn p" href="#console">Seal a coin</a><a class="btn" href="#tide">How it opens ↓</a></div>
+ <div class="status m"><span><i class="dot"></i>slot <b id="slot">—</b></span><span>SOL <b id="solp">—</b></span><span>seals <b>000</b></span></div>
 </section>
 
 <!-- RACE -->
@@ -196,7 +220,23 @@ footer{border-top:1px solid var(--line2);padding:22px clamp(16px,5vw,64px);font:
   <div class="lane card rv"><h4><b>a normal launch</b><span id="t1">block 0</span></h4><div class="blocks" id="lane1"></div></div>
   <div class="lane card rv"><h4><b>a clam</b><span id="t2">day 1</span></h4><div class="blocks" id="lane2"></div></div>
  </div>
- <div class="race-cap rv"><span>illustration · sped up</span><button class="chip" id="replay">↻ replay</button></div>
+ <div class="race-cap rv"><button class="chip" id="replay">↻ replay</button></div>
+</div></section>
+
+<!-- TIDE: scroll story -->
+<section id="tide" class="tide"><div class="tide-in">
+ <div class="steps m">
+  <div class="st on"><i>01</i><b>sealed</b><small>name hidden</small></div>
+  <div class="st"><i>02</i><b>filling</b><small>one price · 2% cap</small></div>
+  <div class="st"><i>03</i><b>open</b><small>one tx · LP locked</small></div>
+  <div class="st"><i>04</i><b>checked</b><small>seal matches</small></div>
+ </div>
+ <div class="tide-stage">
+  <canvas id="tc" aria-label="A clam filling, then opening"></canvas>
+  <div class="tname m hid" id="tname">████████████ · $█████</div>
+  <div class="tbar m" id="tbar"></div>
+  <div class="tstats m"><span><b id="tsol">0.0</b> / 25 SOL</span><span><b id="tw">0</b> wallets</span><span class="tchk" id="tchk">✓ seal matches</span></div>
+ </div>
 </div></section>
 
 <!-- SHELL: foes + rules -->
@@ -272,7 +312,6 @@ footer{border-top:1px solid var(--line2);padding:22px clamp(16px,5vw,64px);font:
    <p class="note" id="capnote">1B supply · 50% to wallets inside · 50% in the pool.</p>
   </div>
   <div class="stage card">
-   <span class="illus">ILLUSTRATION</span>
    <canvas id="simc" aria-label="A clam filling and opening"></canvas>
    <div class="bar"><i id="sb"></i></div>
    <div class="reveal m" id="rev">sealed</div>
@@ -319,18 +358,13 @@ footer{border-top:1px solid var(--line2);padding:22px clamp(16px,5vw,64px);font:
  </div>
 </div></section>
 
-<section class="end">
- <div class="big rv">you are not early. you are not late. <span>you are inside.</span></div>
- <pre aria-hidden="true">      .-~~~~~~-.
-    .'  \  |  /  '.
-   /  --  (@)  --  \
-   '.  /  |  \  .'
-     '-.______.-'</pre>
- <div style="margin-top:34px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><a class="btn p" href="#console">Seal a coin</a><a class="btn" href="#deep">Back up ↑</a></div>
+<section class="end" id="end">
+ <div class="pfp"><img src="/pfp.png" width="400" height="400" alt="CLAM" loading="lazy"></div>
+ <div class="btns"><a class="btn p" href="#console">Seal a coin</a><a class="btn" href="#deep">Back up ↑</a></div>
 </section>
 </main>
 
-<footer><span>clam · sealed launches on solana</span><span>stay sealed.</span></footer>
+
 
 <script>
 const $=id=>document.getElementById(id);
@@ -389,10 +423,27 @@ function makeAscii(canvas,cols,rows){
    ctx.fillStyle=col;ctx.fillText(chr,c*cw+cw/2,r*ch)}
  };render.size=size;return render
 }
-const hero=makeAscii($('asc'),96,40);
+const hero=makeAscii($('asc'),72,30);let hov=0,hc=0;$('asc').addEventListener('pointerenter',()=>hov=1);$('asc').addEventListener('pointerleave',()=>hov=0);$('asc').addEventListener('click',()=>hov=hov?0:1);
 let t0=performance.now();
-function heroLoop(t){const s=(t-t0)/1000;const open=RM?1:.62+.42*Math.sin(s*.7);hero(Math.max(0,Math.min(1,open)),.8+.2*Math.sin(s*2.1));if(!RM)setTimeout(()=>requestAnimationFrame(heroLoop),66)}
+function heroLoop(t){const s=(t-t0)/1000;hc+=(hov-hc)*.18;const base=RM?1:.62+.42*Math.sin(s*.7);const open=base*(1-hc)+hc;hero(Math.max(0,Math.min(1,open)),.8+.2*Math.sin(s*2.1)+hc*.5);if(!RM)setTimeout(()=>requestAnimationFrame(heroLoop),66)}
 (document.fonts?document.fonts.ready:Promise.resolve()).then(()=>requestAnimationFrame(heroLoop));
+
+/* ---------- tide scroll story ---------- */
+(()=>{const sec=$('tide'),R=makeAscii($('tc'),84,35),steps=[...sec.querySelectorAll('.st')];let last=-1,raf=0;const NAME='the deep one · $PEARL',HID='████████████ · $█████';
+function upd(){raf=0;const r=sec.getBoundingClientRect(),tot=sec.offsetHeight-innerHeight,p=Math.max(0,Math.min(1,-r.top/(tot||1)));
+ const fill=Math.max(0,Math.min(1,(p-.1)/.5)),open=Math.max(0,Math.min(1,(p-.64)/.14)),stage=p<.1?0:p<.64?1:p<.84?2:3;
+ R(open,.7+open*.5);const n=30,k=Math.round(fill*n);$('tbar').textContent='['+'#'.repeat(k)+'·'.repeat(n-k)+'] '+String(Math.round(fill*100)).padStart(3,' ')+'%';
+ $('tsol').textContent=(fill*25).toFixed(1);$('tw').textContent=Math.round(fill*73);
+ if(stage!==last){steps.forEach((el,i)=>{el.classList.toggle('on',i===stage);el.classList.toggle('done',i<stage)});
+  $('tname').classList.toggle('hid',stage<2);if(stage>=2&&last<2)scramble($('tname'),NAME);if(stage<2){clearInterval($('tname')._t);$('tname').textContent=HID}
+  $('tchk').classList.toggle('on',stage===3);last=stage}}
+addEventListener('scroll',()=>{if(!raf)raf=requestAnimationFrame(upd)},{passive:true});addEventListener('resize',()=>requestAnimationFrame(upd));
+(document.fonts?document.fonts.ready:Promise.resolve()).then(upd)})();
+
+/* ---------- foe glitch + card spotlight ---------- */
+(()=>{const F=[...document.querySelectorAll('.foe pre')];F.forEach(p=>p._o=p.textContent);const G='@#%*+=-:·';
+if(!RM)setInterval(()=>{const p=F[(Math.random()*F.length)|0];let k=0;const iv=setInterval(()=>{p.textContent=p._o.split('').map(c=>c===' '||c==='\n'?c:(Math.random()<.55-k*.08?G[(Math.random()*G.length)|0]:c)).join('');if(++k>7){clearInterval(iv);p.textContent=p._o}},45)},1400);
+document.querySelectorAll('.card').forEach(c=>c.addEventListener('pointermove',e=>{const r=c.getBoundingClientRect();c.style.setProperty('--mx',e.clientX-r.left+'px');c.style.setProperty('--my',e.clientY-r.top+'px')}))})();
 
 /* ---------- live strip ---------- */
 async function slot(){for(const u of ['https://solana-rpc.publicnode.com','https://api.mainnet-beta.solana.com']){try{const r=await fetch(u,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'getSlot'})});const j=await r.json();if(j.result){$('slot').textContent=j.result.toLocaleString('en-US');return}}catch(e){}}}
@@ -472,7 +523,7 @@ document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>tab(b.dataset.t));
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
 document.querySelectorAll('.rv').forEach(el=>io.observe(el));
 setTimeout(()=>document.querySelectorAll('.rv').forEach(el=>el.classList.add('in')),4000);
-const secs=['deep','race','rules','console','faq'];
+const secs=['deep','race','tide','rules','console','faq'];
 addEventListener('scroll',()=>{const h=document.documentElement,p=h.scrollTop/(h.scrollHeight-innerHeight||1);$('dm').textContent='−'+Math.round(p*320)+'m';$('df').style.height=(p*100)+'%';
  let cur='deep';for(const s of secs){const el=$(s);if(el&&el.getBoundingClientRect().top<innerHeight*.35)cur=s}document.querySelectorAll('.links a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+cur))},{passive:true});
 </script>
